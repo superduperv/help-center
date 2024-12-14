@@ -1,0 +1,36 @@
+---
+import { getCollection } from "astro:content";
+
+const articles = (await getCollection("articles")).sort(
+	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+
+const popularArticles = articles.filter((post) => post.data.popular);
+const allArticles = articles.filter((post) => !post.data.popular);
+---
+
+<section>
+    {popularArticles.length > 0 && (
+        <h2>Popular Topics</h2>
+        <ul>
+            {popularArticles.map((post) => (
+                <li>
+                    <a href={`/article/${post.id}`}>
+                        <h4>{post.data.title}</h4>
+                    </a>
+                </li>
+            ))}
+        </ul>
+    )}
+
+    <h2>Browse</h2>
+    <ul>
+        {allArticles.map((post) => (
+            <li>
+                <a href={`/article/${post.id}`}>
+                    <h4>{post.data.title}</h4>
+                </a>
+            </li>
+        ))}
+    </ul>
+</section>

@@ -1,0 +1,28 @@
+---
+import { getCollection } from "astro:content";
+
+const allPosts = await getCollection("articles");
+
+const { title, tags } = Astro.props;
+
+const relatedArticles = allPosts.filter((post) => {
+    const currentTags = tags || [];
+    const postTags = post.data.tags || [];
+
+    return post.data.title !== title && postTags.some((tag) => currentTags.includes(tag));
+});
+---
+
+{relatedArticles.length > 0 && (
+<section>
+    <h2>Related Articles</h2>
+    
+        <ul>
+            {relatedArticles.map((post) => (
+                <li>
+                    <a href={`/article/${post.id}`}>{post.data.title}</a>
+                </li>
+            ))}
+        </ul>
+    </section>
+)}
